@@ -1,23 +1,218 @@
+---
+// src/layouts/Layout.astro
+import Navbar from '../components/Navbar.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Sitio web construido con Astro 5',
+} = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="author" content="R0beso"></meta>
+  </head>
+
+  <body>
+    <!-- Barra de navegación -->
+    <Navbar />
+
+    <!-- Contenido principal de la página -->
+    <main class="layout-main">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="layout-footer">
+      <div class="container layout-footer__inner">
+        <span class="layout-footer__brand">✦ Mi Sitio</span>
+        <p class="layout-footer__copy">
+          &copy; {new Date().getFullYear()} — Hecho con
+          <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>
 
+<style is:global>
+/* ============================================
+   GLOBAL STYLES — Green Organic Theme
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ─── CSS Variables ─────────────────────────── */
+:root {
+  --green-950: #052010;
+  --green-900: #0a3d1f;
+  --green-800: #145a2e;
+  --green-700: #1e7a3f;
+  --green-600: #2a9d56;
+  --green-500: #3cbd6e;
+  --green-400: #6ed49a;
+  --green-300: #a3e6be;
+  --green-200: #cff2de;
+  --green-100: #eafaf2;
+  --cream:      #f5f0e8;
+  --warm-white: #fdfcf8;
+  --ink:        #0e1a13;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
+  --nav-height: 70px;
+  --max-width:  1200px;
+}
+
+/* ─── Reset ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--warm-white);
+  color: var(--ink);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Typography ─────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  color: var(--green-900);
+}
+
+h1 { font-size: clamp(2.5rem, 6vw, 5rem); }
+h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.8rem); }
+
+p { font-size: 1.05rem; color: var(--green-950); opacity: 0.85; max-width: 65ch; }
+
+a { color: var(--green-700); text-decoration: none; transition: color 0.2s ease; }
+a:hover { color: var(--green-500); }
+
+/* ─── Layout Helpers ─────────────────────────── */
+.container { width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 2rem; }
+.section   { padding: 6rem 0; }
+
+/* ─── Buttons ────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.btn-primary { background: var(--green-800); color: var(--cream); }
+.btn-primary:hover {
+  background: var(--green-600);
+  color: var(--warm-white);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(10,61,31,0.25);
+}
+
+.btn-outline { background: transparent; color: var(--green-800); border: 1.5px solid var(--green-700); }
+.btn-outline:hover { background: var(--green-100); color: var(--green-900); }
+
+/* ─── Decorative ─────────────────────────────── */
+.leaf-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  color: var(--green-400);
+  font-size: 1.2rem;
+}
+.leaf-divider::before, .leaf-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--green-300));
+}
+.leaf-divider::after { background: linear-gradient(to left, transparent, var(--green-300)); }
+
+/* ─── Scrollbar ──────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--green-100); }
+::-webkit-scrollbar-thumb { background: var(--green-500); border-radius: 3px; }
+
+::selection { background: var(--green-300); color: var(--green-950); }
+
+/* ─── Animations ─────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.6s ease forwards; }
+</style>
+
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+/* ─── Main content area ───────────────────────── */
+.layout-main {
+  padding-top: var(--nav-height);
+  min-height: calc(100vh - var(--nav-height));
+}
+
+/* ─── Footer ─────────────────────────────────── */
+.layout-footer {
+  background: var(--green-950);
+  color: var(--green-300);
+  padding: 2rem 0;
+}
+
+.layout-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.layout-footer__brand {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--green-400);
+  letter-spacing: 0.05em;
+}
+
+.layout-footer__copy {
+  font-size: 0.85rem;
+  color: var(--green-400);
+  opacity: 0.7;
+  max-width: unset;
+}
+
+.layout-footer__copy a {
+  color: var(--green-300);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.layout-footer__copy a:hover {
+  color: #fff;
+}
 </style>

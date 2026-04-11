@@ -1,0 +1,198 @@
+---
+// src/pages/contacto.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contacto — Mi Sitio" description="Ponte en contacto con nosotros">
+  <section class="contact-hero">
+    <div class="container">
+      <p class="eyebrow">Hablemos</p>
+      <h1>Contacto</h1>
+      <div class="leaf-divider">✦</div>
+      <p class="subtitle">
+        ¿Tienes alguna pregunta o proyecto en mente?<br />
+        Escríbenos y te responderemos a la brevedad.
+      </p>
+    </div>
+  </section>
+
+  <section class="section contact-form-section">
+    <div class="container contact-grid">
+
+      <!-- Formulario -->
+      <div class="form-card fade-in">
+        <form class="contact-form" novalidate>
+          <div class="field">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre completo" required />
+          </div>
+
+          <div class="field">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="tu@correo.com" required />
+          </div>
+
+          <div class="field">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" rows="5" placeholder="¿En qué podemos ayudarte?" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+        </form>
+      </div>
+
+      <!-- Info de contacto -->
+      <aside class="contact-info fade-in">
+        <h3>Información</h3>
+        <ul class="info-list">
+          <li>
+            <span class="info-icon">✉</span>
+            <span>hola@misitio.com</span>
+          </li>
+          <li>
+            <span class="info-icon">☎</span>
+            <span>+52 (667) 000 0000</span>
+          </li>
+          <li>
+            <span class="info-icon">⌖</span>
+            <span>Culiacán, Sinaloa, México</span>
+          </li>
+        </ul>
+      </aside>
+
+    </div>
+  </section>
+</Layout>
+
+<style>
+/* ── Contact Hero ── */
+.contact-hero {
+  background: linear-gradient(160deg, var(--green-900), var(--green-800));
+  padding: 6rem 0 4rem;
+  text-align: center;
+}
+
+.contact-hero h1 {
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--green-400);
+  margin-bottom: 0.75rem;
+  max-width: unset;
+  opacity: 1;
+}
+
+.subtitle {
+  color: var(--green-200);
+  font-size: 1.05rem;
+  margin: 1.5rem auto 0;
+  max-width: 50ch;
+  text-align: center;
+}
+
+/* ── Contact Grid ── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Form Card ── */
+.form-card {
+  background: #fff;
+  border: 1px solid var(--green-200);
+  border-radius: 4px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 30px rgba(10, 61, 31, 0.07);
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-800);
+}
+
+.field input,
+.field textarea {
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--green-200);
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--green-100);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(60,189,110,0.15);
+  background: #fff;
+}
+
+/* ── Contact Info ── */
+.contact-info {
+  background: var(--green-950);
+  color: var(--green-200);
+  border-radius: 4px;
+  padding: 2rem;
+}
+
+.contact-info h3 {
+  color: var(--green-400);
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+
+.info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.info-list li {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  color: var(--green-300);
+}
+
+.info-icon {
+  color: var(--green-500);
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+</style>

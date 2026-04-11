@@ -1,11 +1,140 @@
 ---
-import Welcome from '../components/Welcome.astro';
+// src/pages/index.astro
 import Layout from '../layouts/Layout.astro';
+import CalendarioRiegos from '../components/CalendarioRiegos.astro';
+import GaleriaArboles from '../components/GaleriaArboles.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Inicio — Árboles Aguacates" description="Seguimiento de árboles de aguacate en Culiacán">
+  <section class="hero">
+    <div class="container hero__inner">
+      <p class="hero__eyebrow">Culiacán, Sinaloa</p>
+      <h1 class="hero__title">Árboles de<br /><em>Aguacate</em></h1>
+      <p class="hero__subtitle">Registro de riegos, abonos y seguimiento fotográfico de cada árbol (Apartir de febrero de 2026).</p>
+    </div>
+    <div class="hero__bg-circle" aria-hidden="true"></div>
+  </section>
+
+  <section class="section">
+    <div class="container componentes-grid">
+
+      <CalendarioRiegos
+        riegos={[
+         "08/02/2026", "23/02/2026",
+         "05/03/2026", "21/03/2026", 
+         "05/04/2026"
+         ]}
+        abonos={["05/03/2026"]}
+      />
+
+      <GaleriaArboles arboles={{
+        "1": [
+          { fecha: "21/03/2025", src: "/1..21.3.png" },
+        ],
+        "2": [
+          { fecha: "21/03/2025", src: "/2..21.3.png" },
+        ],
+        "3": [
+          { fecha: "21/03/2025", src: "/3..21.3.png" },
+        ],
+        "4": [
+          { fecha: "21/03/2025", src: "/4..21.3.png" },
+        ],
+        "5": [
+          { fecha: "21/03/2025", src: "/5..21.3.png" },
+          { fecha: "27/03/2025", src: "/5..27.3.png" },
+        ],
+        "6": [
+          { fecha: "21/03/2025", src: "/6..21.3.png" },
+          { fecha: "25/03/2025", src: "/6..25.3.png" },
+        ],
+        "7": [
+          { fecha: "21/03/2025", src: "/7..21.3.png" },
+        ],
+        "8": [
+          { fecha: "21/03/2025", src: "/8..21.3.png" },
+        ],
+        "9": [
+          { fecha: "21/03/2025", src: "/9..21.3.png" },
+        ],
+        "10": [
+          { fecha: "21/03/2025", src: "/10..21.3.png" },
+        ],
+        "11": [
+          { fecha: "21/03/2025", src: "/11..21.3.png" },
+        ],
+        "12": [
+          { fecha: "21/03/2025", src: "/12..21.3.png" },
+        ],
+        "13": [
+          { fecha: "21/03/2025", src: "/13..21.3.png" },
+        ],
+        "14": [
+          { fecha: "21/03/2025", src: "/14..21.3.png" },
+        ],
+        "15": [
+          { fecha: "21/03/2025", src: "/15..21.3.png" },
+        ],
+        "16": [
+          { fecha: "21/03/2025", src: "/16..21.3.png" },
+        ],
+        "17": [
+          { fecha: "21/03/2025", src: "/17..21.3.png" },
+        ],
+        "18": [
+          { fecha: "21/03/2025", src: "/18..21.3.png" },
+        ],
+      }} />
+
+    </div>
+  </section>
 </Layout>
+
+<style>
+.hero {
+  position: relative;
+  min-height: 45vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--green-950) 0%, var(--green-900) 60%, var(--green-800) 100%);
+}
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  animation: fadeInUp 0.8s ease both;
+}
+.hero__eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--green-400);
+  margin-bottom: 1rem;
+  max-width: unset;
+  opacity: 1;
+}
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  color: var(--cream);
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+.hero__title em { color: var(--green-400); font-style: italic; }
+.hero__subtitle { color: var(--green-200); font-size: 1rem; max-width: 42ch; opacity: 0.85; }
+.hero__bg-circle {
+  position: absolute;
+  right: -5%; top: 50%;
+  transform: translateY(-50%);
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--green-700) 0%, transparent 70%);
+  opacity: 0.2;
+  pointer-events: none;
+}
+.componentes-grid { display: flex; flex-direction: column; gap: 2rem; }
+</style>

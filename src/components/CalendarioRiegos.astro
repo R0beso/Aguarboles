@@ -1,0 +1,302 @@
+---
+const { riegos = [], abonos = [] } = Astro.props;
+
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+function toISO(str:any) {
+  const p = str.split('/');
+  const d = p[0].padStart(2,'0');
+  const m = p[1].padStart(2,'0');
+  const y = p[2];
+  return y + '-' + m + '-' + d;
+}
+
+const rSet = new Set(riegos.map(toISO));
+const aSet = new Set(abonos.map(toISO));
+
+const yearSet = new Set(
+  [...riegos, ...abonos].map(s => toISO(s).slice(0,4))
+);
+const years = [...yearSet].sort().reverse();
+if (!years.length) years.push(String(new Date().getFullYear()));
+
+// Construir matrices por año: año -> mes -> array de 31 celdas
+const matrices:any = {};
+for (const year of years) {
+  matrices[year] = [];
+  for (let mo = 0; mo < 12; mo++) {
+    const daysInMonth = new Date(Number(year), mo + 1, 0).getDate();
+    const row = [];
+    for (let day = 1; day <= 31; day++) {
+      if (day > daysInMonth) {
+        row.push('vacio');
+      } else {
+        const mm  = String(mo + 1).padStart(2,'0');
+        const dd  = String(day).padStart(2,'0');
+        const iso = year + '-' + mm + '-' + dd;
+        if (rSet.has(iso) && aSet.has(iso)) row.push('ambos');
+        else if (rSet.has(iso))             row.push('riego');
+        else if (aSet.has(iso))             row.push('abono');
+        else                                row.push('nada');
+      }
+    }
+    matrices[year].push({ mes: MESES[mo], dias: row });
+  }
+}
+
+const dias = Array.from({length: 31}, (_, i) => i + 1);
+---
+
+<section class="cal-card">
+  <div class="cal-header">
+    <h3 class="cal-title">Historial de cuidados</h3>
+    <div class="cal-leyenda">
+      <span class="ley-item"><span class="dot riego"></span>Riego</span>
+      <span class="ley-item"><span class="dot abono"></span>Abono</span>
+      <span class="ley-item"><span class="dot ambos"></span>Ambos</span>
+    </div>
+  </div>
+
+  <!-- Tabs de año -->
+  <div class="year-tabs">
+    {years.map((y, i) => (
+      <button
+        class={'tab-btn' + (i === 0 ? ' active' : '')}
+        data-year={y}
+      >
+        {y}
+      </button>
+    ))}
+  </div>
+
+  <!-- Una tabla por año -->
+  {years.map((year, yi) => (
+    <div class="year-panel" data-panel={year} style={yi !== 0 ? 'display:none' : ''}>
+      <div class="table-wrap">
+        <table class="cal-table">
+          <thead>
+            <tr>
+              <th class="th-mes">Mes</th>
+              {dias.map(d => <th class="th-dia">{d}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {matrices[year].map(({ mes, dias: celdas }:any) => (
+              <tr>
+                <td class="td-mes">{mes}</td>
+                {celdas.map((tipo:any, i:any) => (
+                  <td class={'td-cel ' + tipo} title={tipo !== 'vacio' && tipo !== 'nada' ? mes + ' ' + (i+1) + ' — ' + tipo : ''}>
+                    {tipo !== 'vacio' && tipo !== 'nada' ? <span class="punto"></span> : ''}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat">
+          <span class="stat-n">{riegos.filter((r:any) => toISO(r).startsWith(year)).length}</span>
+          <span class="stat-l">Riegos en {year}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-n">{abonos.filter((a:any) => toISO(a).startsWith(year)).length}</span>
+          <span class="stat-l">Abonos en {year}</span>
+        </div>
+        <div class="stat">
+          <span class="stat-n">{riegos.length + abonos.length}</span>
+          <span class="stat-l">Total histórico</span>
+        </div>
+      </div>
+    </div>
+  ))}
+</section>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.year-panel').forEach((p) => {
+        (p as HTMLElement).style.display = 'none';
+      });
+      btn.classList.add('active');
+      const panel = document.querySelector(`[data-panel="${btn.getAttribute('data-year')}"]`) as HTMLElement;
+
+      if (panel) {
+        panel.style.display = '';
+      }
+    });
+  });
+</script>
+
+<style>
+.cal-card {
+  background: #fff;
+  border: 1px solid var(--green-200);
+  border-radius: 8px;
+  padding: 1.75rem;
+  box-shadow: 0 2px 20px rgba(10,61,31,0.06);
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cal-title {
+  font-family: var(--font-display);
+  color: var(--green-900);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.cal-leyenda { display: flex; gap: 1rem; }
+.ley-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--green-800);
+}
+
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot.riego { background: #3cbd6e; }
+.dot.abono { background: #5a9bc8; }
+.dot.ambos { background: #c8a45a;}
+
+/* Tabs */
+.year-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--green-300);
+  background: transparent;
+  color: var(--green-800);
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-btn:hover  { background: var(--green-100); }
+.tab-btn.active { background: var(--green-800); color: #fff; border-color: var(--green-800); }
+
+/* Table */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 4px;
+  border: 1px solid var(--green-100);
+}
+
+.cal-table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 0.72rem;
+}
+
+.th-mes, .th-dia {
+  padding: 0.4rem 0.3rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--green-900);
+  color: var(--green-200);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+
+.th-mes {
+  left: 0;
+  z-index: 2;
+  min-width: 44px;
+  text-align: left;
+  padding-left: 0.75rem;
+}
+
+.th-dia { min-width: 22px; }
+
+.td-mes {
+  padding: 0.35rem 0.75rem;
+  font-weight: 600;
+  color: var(--green-700);
+  background: var(--green-100);
+  white-space: nowrap;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-right: 1px solid var(--green-200);
+}
+
+.td-cel {
+  text-align: center;
+  padding: 0.2rem;
+  border: 1px solid transparent;
+  transition: background 0.1s;
+}
+
+tr:nth-child(even) .td-cel.nada { background: #f9fdf9; }
+tr:nth-child(odd)  .td-cel.nada { background: #fff; }
+
+.td-cel.vacio { background: #fafafa; }
+
+.td-cel.riego,
+.td-cel.abono,
+.td-cel.ambos { cursor: default; }
+
+.td-cel.riego:hover { background: rgba(60,189,110,0.15); }
+.td-cel.abono:hover { background: rgba(200,164,90,0.15); }
+.td-cel.ambos:hover { background: rgba(90,155,200,0.15); }
+
+.punto {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+.td-cel.riego .punto { background: #3cbd6e; }
+.td-cel.abono .punto { background: #5a9bc8; }
+.td-cel.ambos .punto { background: #c8a45a; }
+
+/* Stats */
+.stats-row {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--green-100);
+}
+
+.stat { display: flex; flex-direction: column; }
+
+.stat-n {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--green-800);
+  line-height: 1;
+}
+
+.stat-l {
+  font-size: 0.73rem;
+  color: var(--green-600);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+</style>

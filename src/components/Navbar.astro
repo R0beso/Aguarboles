@@ -1,0 +1,270 @@
+---
+// src/components/Navbar.astro
+const path = Astro.url.pathname;
+const isInicio = path === '/';
+---
+
+<header class="navbar">
+  <!-- Logo / Marca -->
+  <a href="/" class="navbar__brand" aria-label="Inicio">
+    <img
+      src="/Logo.png"
+      alt="Logo"
+      class="navbar__logo-img"
+      width="40"
+      height="40"
+    />
+    <span class="navbar__logo-text">Árboles Aguacates</span>
+  </a>
+
+  <!-- Navegación principal -->
+  <nav class="navbar__nav" aria-label="Navegación principal">
+    <ul class="navbar__list">
+      <li class="navbar__item">
+        <a
+          href="/"
+          class={isInicio ? 'navbar__link navbar__link--active' : 'navbar__link'}
+          aria-current={isInicio ? 'page' : undefined}
+        >
+          Inicio
+          <span class="navbar__link-underline"></span>
+        </a>
+      </li>
+      <li class="navbar__item">
+        <a
+          href="https://opihost.com/contacto"
+          class="navbar__link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Contacto
+          <span class="navbar__link-underline"></span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Botón hamburguesa (móvil) -->
+  <button
+    class="navbar__hamburger"
+    id="hamburger"
+    aria-label="Abrir menú"
+    aria-expanded="false"
+    aria-controls="mobile-menu"
+  >
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Menú móvil -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <ul class="mobile-menu__list">
+    <li>
+      <a href="/" class={isInicio ? 'mobile-menu__link mobile-menu__link--active' : 'mobile-menu__link'}>
+        Inicio
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://opihost.com/contacto"
+        class="mobile-menu__link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Contacto ↗
+      </a>
+    </li>
+  </ul>
+</div>
+
+<style>
+/* ─── Navbar ─────────────────────────────────── */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  background: var(--green-900);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  /* Sutil efecto vidrio en la barra */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Brand ── */
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.navbar__logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.navbar__brand:hover .navbar__logo-img {
+  opacity: 0.85;
+}
+
+.navbar__logo-text {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+}
+
+/* ── Nav links ── */
+.navbar__list {
+  list-style: none;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.navbar__link {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  color: var(--green-200);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: color 0.2s ease;
+  overflow: hidden;
+}
+
+.navbar__link:hover {
+  color: #fff;
+}
+
+/* Línea animada abajo del link */
+.navbar__link-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--green-400);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.navbar__link:hover .navbar__link-underline,
+.navbar__link--active .navbar__link-underline {
+  transform: scaleX(1);
+}
+
+.navbar__link--active {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ── Hamburger (móvil) ── */
+.navbar__hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.navbar__hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--green-200);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* ── Mobile Menu ── */
+.mobile-menu {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  background: var(--green-950);
+  z-index: 99;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+}
+
+.mobile-menu.is-open {
+  max-height: 300px;
+  padding: 1.5rem 0;
+}
+
+.mobile-menu__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-menu__link {
+  display: block;
+  padding: 0.75rem 2rem;
+  color: var(--green-200);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.mobile-menu__link:hover,
+.mobile-menu__link--active {
+  color: var(--green-400);
+}
+
+/* ─── Responsive ─────────────────────────────── */
+@media (max-width: 640px) {
+  .navbar__nav   { display: none; }
+  .navbar__hamburger { display: flex; }
+}
+</style>
+
+<script>
+  const hamburger = document.getElementById('hamburger')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('is-open');
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+    hamburger.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+  });
+
+  // Cerrar al hacer clic en un link del menú móvil
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('is-open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    });
+  });
+</script>
